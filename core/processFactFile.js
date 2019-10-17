@@ -22,22 +22,22 @@ const getFactFile = (callback) => {
   
 const processData = (jsData, callback) => {
   //const arrayData = Object.keys(jsData).map(i => jsData[i]);
+
+  console.log("world data?",jsData.countries.afghanistan);
   const worldData = []
   let country = {
     key:"",
-    data:{}
+    countryData:{}
     };
   for (let [key, value] of Object.entries(jsData)){
-    console.log(`key = ${key}: value = ${value}`);
-
-    
-    for (let [key1, value1] of Object.entries(value)){
-      country.key = key1;
-      country.data = value1;
-      console.log('country=',country);
+    country.key = key;
+      country.countryData = value;
       worldData.push(country);
-    }
-  
+    // for (let [key1, value1] of Object.entries(value)){
+      
+    // }
+   
+    
 
   }
   //console.log(arrayData, arrayData.length);
@@ -51,14 +51,15 @@ const processData = (jsData, callback) => {
 // process the CIA Factfile and break it into smaller files by Wolrd, continent and countries
 // return true on successful completion
 exports.processFactFile = (callback) => {
-    getFactFile((err,data) =>{
+    getFactFile((err,data) => {
       if(err) {
         callback(err)
       } else {
         
-        processData(data,(err,jsdata)=>{
-        
-          callback(data);
+        processData(data,(err,countryArray) => {
+          
+
+          callback(countryArray);
         })
         
       }
