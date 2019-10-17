@@ -1,0 +1,12 @@
+{
+  "name": "httpServer",
+  "version": "1.0.0",
+  "description": "a simple http server for processing the CIA Factifile",
+  "main": "server.js",
+  "repository": "https://github.com/markp112/httpServer.git",
+  "author": "Mark Phillips <mark.phillips1965@googlemail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

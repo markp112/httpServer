@@ -13,7 +13,8 @@ Router.get('/processFile',(req, res) => {
       res.send(err);
     }else {
       res.status(200);
-      res.send(data);
+      const argentina = data['World'];
+      res.send(argentina);
     }
     return;
   });

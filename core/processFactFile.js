@@ -21,9 +21,27 @@ const getFactFile = (callback) => {
 
   
 const processData = (jsData, callback) => {
-  const arrayData = Object.keys(jsData).map(i => jsData[i]);
-  console.log(arrayData, arrayData.length);
+  //const arrayData = Object.keys(jsData).map(i => jsData[i]);
+  const worldData = []
+  let country = {
+    key:"",
+    data:{}
+    };
+  for (let [key, value] of Object.entries(jsData)){
+    console.log(`key = ${key}: value = ${value}`);
+
+    
+    for (let [key1, value1] of Object.entries(value)){
+      country.key = key1;
+      country.data = value1;
+      console.log('country=',country);
+      worldData.push(country);
+    }
   
+
+  }
+  //console.log(arrayData, arrayData.length);
+  callback(null, worldData);
 
 }
 
