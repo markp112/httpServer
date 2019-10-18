@@ -1,7 +1,7 @@
 
 class ICoordinate  {
   constructor(lat, lng) {
-    this.let = lat,
+    this.lat = lat,
     this.lng = lng;
   }
 }

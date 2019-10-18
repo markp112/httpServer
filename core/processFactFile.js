@@ -1,7 +1,7 @@
 const ICountry = require('./classes/countryClass');
 const IGeography = require('./classes/geographyClass');
 const ICoordinate = require('./classes/coordinatesClass');
-
+const config = require('../config');
 
 // open the fact file and return a handle to it
 const getFactFile = (callback) => {
@@ -24,7 +24,7 @@ const getIntroduction = (intro) =>  intro.background;
 
 const getCoordinates = (coordinates) => {
   const coord = new ICoordinate();
-  const  lattitude =  coordinates.latitude;
+  const lattitude =  coordinates.latitude;
   const longitude = coordinates.longitude;
   coord.lat = `${lattitude.degrees}.${lattitude.minutes}${lattitude.hemisphere}`;
   coord.lng = `${longitude.degrees}.${longitude.minutes}${longitude.hemisphere}`;
@@ -46,7 +46,7 @@ const processData = (jsData, callback) => {
   const worldData = []
   for (let [key, value] of Object.entries(jsData.countries)){
       let country = new ICountry(key);
-      country.Introduction = getIntroduction(value.data.introduction);
+      country.introduction = getIntroduction(value.data.introduction);
       country.geography = getGeography(value.data.geography);
       worldData.push(country);
   }
@@ -54,7 +54,7 @@ const processData = (jsData, callback) => {
 }
 
 const writeCountryArray = (countryArray, callback) => {
-  const dataFolder = "./data/world/";
+  const dataFolder = config.config.dataFolder;
   const fs = require('fs');
   countryArray.forEach(country => {
     fs.writeFile(`${dataFolder}${country.name}.json`,JSON.stringify(country),(err) => {
@@ -68,6 +68,26 @@ const writeCountryArray = (countryArray, callback) => {
   })
 }
 
+const buildCountryList = (countryArray) => {
+  let countryList = [];
+  countryArray.forEach(country =>{
+    countryList.push (country.name);
+  })
+ return countryList;
+}
+
+const writeCountryList = (countryList, callback) => {
+    const dataFolder = config.config.dataFolder;
+    let fs = require('fs');
+    fs.writeFile(`${dataFolder}countryList.json`,JSON.stringify(countryList),(err) => {
+      if(err){
+        callback(err);
+      } else {
+        callback(null,'completed');
+      }
+    })
+}
+
 // process the CIA Factfile and break it into smaller files by Wolrd, continent and countries
 // return true on successful completion
 exports.processFactFile = (callback) => {
@@ -77,7 +97,14 @@ exports.processFactFile = (callback) => {
       } else {
           processData(data,(err,countryArray) => {
             writeCountryArray(countryArray,()=>{
-              //do nothing
+              let countryList = buildCountryList(countryArray);
+              writeCountryList(countryList,(err,msg) =>{
+                if(err){
+                  console.log(err);
+                  callback(err);
+                  return;
+                }//no need to call back at this point
+              });
             });
             callback(countryArray);
         })
