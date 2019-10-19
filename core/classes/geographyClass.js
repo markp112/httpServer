@@ -9,7 +9,7 @@ class IGeography  {
     this._coordinates = coordinates;
   }
   get coordinates () {
-    return this.coordinates;
+    return this._coordinates;
   }
   
 }

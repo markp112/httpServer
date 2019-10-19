@@ -24,10 +24,13 @@ const getIntroduction = (intro) =>  intro.background;
 
 const getCoordinates = (coordinates) => {
   const coord = new ICoordinate();
-  const lattitude =  coordinates.latitude;
+  const latitude = coordinates.latitude;
   const longitude = coordinates.longitude;
-  coord.lat = `${lattitude.degrees}.${lattitude.minutes}${lattitude.hemisphere}`;
-  coord.lng = `${longitude.degrees}.${longitude.minutes}${longitude.hemisphere}`;
+  
+  coord.lat = Number(`${latitude.degrees}.${latitude.minutes}`);
+  coord.lng = Number(`${longitude.degrees}.${longitude.minutes}`);
+  if(latitude.hemisphere === 'S') coord.lat *= -1;  
+  if(longitude.hemisphere === 'W') coord.lng *= -1;  
   return coord;
 }
 
@@ -62,12 +65,12 @@ const writeCountryArray = (countryArray, callback) => {
         console.log(err);
         callback(err);
       }else callback(null,"files Written");
-
     });
-
   })
 }
-
+// build a list of countries
+// inputs an array of ICountry
+// output an array of strings with the country name
 const buildCountryList = (countryArray) => {
   let countryList = [];
   countryArray.forEach(country =>{
