@@ -12,12 +12,20 @@ class ICountry {
     this._geography = geography;
   }
 
-  get introduction () {
+  set mapReferences(mapReference) {
+    this._mapReference = mapReference;
+  }
+
+  get introduction()  {
     return this._introduction;
   }
 
-  get geography () {
+  get geography()  {
     return this._geography;
+  }
+
+  get mapReferences() {
+    return this._mapReference;
   }
 }
 

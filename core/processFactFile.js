@@ -1,6 +1,8 @@
 const ICountry = require('./classes/countryClass');
 const IGeography = require('./classes/geographyClass');
 const ICoordinate = require('./classes/coordinatesClass');
+const IMapReferences = require('./classes/mapReferenceClass');
+const IArea = require('./classes/areaClass')
 const config = require('../config');
 
 // open the fact file and return a handle to it
@@ -41,6 +43,23 @@ const getGeography = (geography) => {
   return geoData;
 }
 
+// retrieve the mapRefrences and return to caller
+const getMapReferences = (mapReferences) => {
+  console.log("map REf", mapReferences)
+  return new IMapReferences(mapReferences);
+  
+}
+
+// return the area 
+const getArea = (area) => {
+  console.log("area =",area)
+  let areaClass = new IArea(area.global_rank);
+  for(type in area){
+   if(type === "land" || type === "water" || type === "total") { areaClass.addArea(type, area[type].value, area[type].units)};
+  }
+  return areaClass;
+}
+
 // iterate the data selecting the elements we want
 // expects the CIA factbook as JS object
 // return an array of country data
@@ -50,7 +69,10 @@ const processData = (jsData, callback) => {
   for (let [key, value] of Object.entries(jsData.countries)){
       let country = new ICountry(key);
       country.introduction = getIntroduction(value.data.introduction);
-      country.geography = getGeography(value.data.geography);
+      const geography = value.data.geography
+      country.geography = getGeography(geography);
+      country.mapReference = getMapReferences(geography.map_references);
+      country.area = getArea(geography.area);
       worldData.push(country);
   }
   callback(null, worldData);
