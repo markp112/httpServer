@@ -4,6 +4,9 @@ class ICountry {
     this.name = name
   }
 
+  set countryCode(code){
+    this._countryCode = code
+  }
   set introduction(introduction) {
     this._introduction = introduction;
   }
@@ -14,6 +17,10 @@ class ICountry {
 
   set mapReferences(mapReference) {
     this._mapReference = mapReference;
+  }
+
+  get countryCode() {
+    return this._countryCode
   }
 
   get introduction()  {

@@ -2,8 +2,22 @@ const ICountry = require('./classes/countryClass');
 const IGeography = require('./classes/geographyClass');
 const ICoordinate = require('./classes/coordinatesClass');
 const IMapReferences = require('./classes/mapReferenceClass');
-const IArea = require('./classes/areaClass')
+const IArea = require('./classes/areaClass');
+const countryCodes = require('../data/countryCodes');
 const config = require('../config');
+
+
+// format the country remove underscores and capitalise first letters
+// input a name of a country
+// output country name formatted
+const formatCountry = (country) => {
+    let countryFormatted  = country.replace(/_/g, ' ');
+    countryFormatted = countryFormatted.toLowerCase()
+                            .split(' ')
+                            .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+                            .join(' ');
+    return countryFormatted;
+}
 
 // open the fact file and return a handle to it
 const getFactFile = (callback) => {
@@ -22,13 +36,19 @@ const getFactFile = (callback) => {
   })
 }
 
+const getCountryCode = (countryName)  => {
+   let countryCode = countryCodes.filter(country => country.country === countryName);
+   return countryCode[0] ? countryCode[0].code : "";
+}
+
+// get the introductory text about the country
 const getIntroduction = (intro) =>  intro.background;
 
+// return the longitude and latitude 
 const getCoordinates = (coordinates) => {
   const coord = new ICoordinate();
   const latitude = coordinates.latitude;
   const longitude = coordinates.longitude;
-  
   coord.lat = Number(`${latitude.degrees}.${latitude.minutes}`);
   coord.lng = Number(`${longitude.degrees}.${longitude.minutes}`);
   if(latitude.hemisphere === 'S') coord.lat *= -1;  
@@ -37,7 +57,6 @@ const getCoordinates = (coordinates) => {
 }
 
 const getGeography = (geography) => {
-// console.log('geography :', geography);
   const geoData = new IGeography(geography.location);
   if('geographic_coordinates' in geography) geoData.coordinates = getCoordinates(geography.geographic_coordinates);
   return geoData;
@@ -45,9 +64,7 @@ const getGeography = (geography) => {
 
 // retrieve the mapRefrences and return to caller
 const getMapReferences = (mapReferences) => {
-  console.log("map REf", mapReferences)
   return new IMapReferences(mapReferences);
-  
 }
 
 // return the area 
@@ -67,7 +84,10 @@ const processData = (jsData, callback) => {
   //const arrayData = Object.keys(jsData).map(i => jsData[i]);
   const worldData = []
   for (let [key, value] of Object.entries(jsData.countries)){
+      let name = formatCountry(key);
       let country = new ICountry(key);
+      console.log("code=",getCountryCode(name), name);
+      country.countryCode = getCountryCode(name);
       country.introduction = getIntroduction(value.data.introduction);
       const geography = value.data.geography
       country.geography = getGeography(geography);
