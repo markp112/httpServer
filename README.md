@@ -12,3 +12,4 @@ The other was to support the front end with an API to retrieve a list of the cou
 
 The application is not intended to be used stand alone, however it can be used to split the CIA factbook into a file per country caontaining the summary information, latitude and longitude and land mass.
 
+To produce these files open a browser and type //http:localhost:8085/processFile
